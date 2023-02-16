@@ -4,8 +4,11 @@
     <router-link to="/about">About</router-link>
   </nav>
   <router-view/> -->
-  <a-button type="primary">你好</a-button>
 
+  <!-- <a-button type="primary">你好</a-button> -->
+  <router-view #="{ Component }">
+      <component :is="Component" />
+  </router-view>
 
 </template>
 
