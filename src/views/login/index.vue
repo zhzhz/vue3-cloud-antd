@@ -5,32 +5,33 @@
         <img src="~@/assets/images/logo.png" width="45" />
         <h1 class="mb-0 ml-2 text-3xl font-bold">智能设备管理系统</h1>
       </div>
-      <a-form layout="horizontal" :model="state.formInline" @submit.prevent="handleSubmit">
+        <a-form layout="horizontal" :model="state.formInline" @submit.prevent="handleSubmit">
+
         <a-form-item>
-          <a-input v-model:value="state.formInline.username" size="large" placeholder="rootadmin">
+            <a-input v-model:value="state.formInline.username" size="large" placeholder="rootadmin">
             <template #prefix><user-outlined type="user" /></template>
-          </a-input>
+            </a-input>
         </a-form-item>
 
         <a-form-item>
-          <a-input
+            <a-input
             v-model:value="state.formInline.password"
             size="large"
             type="password"
             placeholder="123456"
             autocomplete="new-password"
-          >
+            >
             <template #prefix><lock-outlined type="user" /></template>
-          </a-input>
+            </a-input>
         </a-form-item>
 
         <a-form-item>
-          <a-button type="primary" html-type="submit" size="large" :loading="state.loading" block>
+            <a-button type="primary" html-type="submit" size="large" :loading="state.loading" block>
             登录
-          </a-button>
+            </a-button>
         </a-form-item>
 
-      </a-form>
+        </a-form>
     </div>
 </template>
 
@@ -41,6 +42,11 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { message, Modal } from 'ant-design-vue';
 import { UserOutlined, LockOutlined, SafetyOutlined } from '@ant-design/icons-vue';
+
+import { useUserStore } from '@/store/modules/user';
+
+
+import axios from "axios";
 
 const state = reactive({
     loading: false,
@@ -79,7 +85,24 @@ const handleSubmit = async () => {
     }
     state.loading = false;
     message.destroy();
+
+    // //测试axios
+    // let url = "http://127.0.0.1:3000/login";
+
+    // let dataObj = {
+    //     username:"111",
+    //     password:"111"
+    // };
+
+    // axios.post(url, dataObj).then(function (response) {
+    //     console.log(response);
+    // })
+    // .catch(function (error) {
+    //     console.log(error);
+    // });
     
+    const userStore = useUserStore();
+    userStore.login();//向服务器登录，会得到menus
 }
 
 // const doLogin = () =>{

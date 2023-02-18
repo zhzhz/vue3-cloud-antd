@@ -4,6 +4,8 @@ import App from './App.vue'
 import { setupRouter } from './router';
 import {setupAntd} from '@/plugins';
 
+import { setupStore } from '@/store';
+
 const app = createApp(App);
 
 function setupPlugins()
@@ -14,7 +16,7 @@ function setupPlugins()
 async function setupApp() 
 {
     // 挂载vuex状态管理
-    //setupStore(app);
+    setupStore(app);
 
     //await setupI18n(app);
     // 挂载路由
