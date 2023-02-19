@@ -51,20 +51,15 @@
   const isSideMenu = computed(() => themeStore.layout === 'sidemenu');
 
 
-  // 点击菜单
-  const clickMenuItem = ({ key }) => {
-    console.log("clickMenuItem", key);
-    // if (key === currentRoute.name) return;
-    // const targetRoute = getRouteByName(key);
-    // const { isExt, openMode } = targetRoute?.meta || {};
-    // if (isExt && openMode !== 2) {
-    //   //console.log('window.open(key);');
-    //   window.open(key);
-    // } else {
-    //   //console.log('router.push({ name: key });');
-    //   router.push({ name: key });
-    // }
-  };
+    // 点击菜单
+    const clickMenuItem = ({ key }) => {
+    //如果路由去的地方就是当前页面，什么也不做
+    if (key === currentRoute.name) return;
+
+    console.log("clickMenuItem", key)
+    //跳转到要去的路由页面
+    router.push({ name: key });
+    };
 </script>
 
 

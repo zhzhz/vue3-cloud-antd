@@ -12,6 +12,7 @@ import {
     Row,
     Select,
     DatePicker,
+    Tabs
   } from 'ant-design-vue';
   import type { App } from 'vue';
   
@@ -37,6 +38,7 @@ import {
       .use(Col)
       .use(Row)
       .use(Select)
-      .use(DatePicker);
+      .use(DatePicker)
+      .use(Tabs);
   }
   

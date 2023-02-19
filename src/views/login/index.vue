@@ -74,7 +74,16 @@ const handleSubmit = async () => {
     if (username == '111' && password == '111')
     {
         message.success('登录成功！');
+        
+
+        const userStore = useUserStore();
+        await userStore.login();//向服务器登录，会得到menus
+
+
+        console.log("route.query.redirect", route.query.redirect)
         router.replace((route.query.redirect as string) ?? '/');
+       
+        
     }
     else
     {
@@ -101,8 +110,7 @@ const handleSubmit = async () => {
     //     console.log(error);
     // });
     
-    const userStore = useUserStore();
-    userStore.login();//向服务器登录，会得到menus
+    
 }
 
 // const doLogin = () =>{

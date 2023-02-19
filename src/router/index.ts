@@ -29,23 +29,23 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Layout',
-    redirect: '/dashboard/welcome',
+    redirect: '/sys/readAndWrite',
     component: () => import(/* webpackChunkName: "layout" */ '@/layout/index.vue'),
     meta: {
       title: '首页',
     },
     children: [],
   },
-  {
-    path: '/dashboard/welcome',
-    name: 'welcome',
-    component: () => import(/* webpackChunkName: "layout" */ '@/layout/index.vue'),
-    meta: {
-      title: '演示用的暂时的静态首页，之后首页会动态创建',
-    },
-    children: [],
-  },
-  // Layout之外的路由
+  // {
+  //   path: '/dashboard/welcome',
+  //   name: 'welcome',
+  //   component: () => import(/* webpackChunkName: "layout" */ '@/layout/index.vue'),
+  //   meta: {
+  //     title: '演示用的暂时的静态首页，之后首页会动态创建',
+  //   },
+  //   children: [],
+  // },
+  //Layout之外的路由
   ...outsideLayout,
 ];
 

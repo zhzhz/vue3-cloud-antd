@@ -1,30 +1,23 @@
 <template>
     <Layout class="layout">
-    <Layout.Sider
-      v-if="themeStore.layout === 'sidemenu'"
-      v-model:collapsed="collapsed"
-      :width="asiderWidth"
-      :trigger="null"
-      collapsible
-      :theme="getTheme"
-      class="layout-sider"
-    >
-      <!-- <Logo :collapsed="collapsed" /> -->
-      <AsideMenu :collapsed="collapsed" :theme="getTheme" />
-    </Layout.Sider>
+      <Layout.Sider
+        v-if="themeStore.layout === 'sidemenu'"
+        v-model:collapsed="collapsed"
+        :width="asiderWidth"
+        :trigger="null"
+        collapsible
+        :theme="getTheme"
+        class="layout-sider"
+      >
+        <!-- <Logo :collapsed="collapsed" /> -->
+        <AsideMenu :collapsed="collapsed" :theme="getTheme" />
+      </Layout.Sider>
 
-    <!-- <Layout>
-      <PageHeader v-model:collapsed="collapsed" :theme="getTheme">
-        <template v-if="themeStore.layout === 'topmenu'" #default>
-          <Logo :collapsed="collapsed" />
-          <AsideMenu :collapsed="collapsed" :theme="getTheme" />
-        </template>
-      </PageHeader>
-      <Layout.Content class="layout-content">
-        <tabs-view />
-      </Layout.Content>
-      <PageFooter />
-    </Layout> -->
+      <Layout>
+        <Layout.Content class="layout-content">
+            <tabs-view />
+        </Layout.Content>
+      </Layout>
   </Layout>
 </template>
 
@@ -32,11 +25,8 @@
 <script lang="ts" setup>
   import { ref, computed } from 'vue';
   import { Layout } from 'ant-design-vue';
-  import Logo from './logo/index.vue';
-  import { TabsView } from './tabs';
+  import  TabsView  from './tabs/tabs-view.vue';
   import AsideMenu from './menu/menu.vue';
-  import PageHeader from './header/index.vue';
-  import PageFooter from './footer';
   import { useThemeStore } from '@/store/modules/projectConfig';
 
   const themeStore = useThemeStore();
