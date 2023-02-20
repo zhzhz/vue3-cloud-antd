@@ -34,7 +34,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "src/device/devComu.js", "src/device/devComu.js"  ],
   "exclude": [
     "node_modules"
   ]
