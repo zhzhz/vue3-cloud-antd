@@ -26,9 +26,13 @@ import {jsonParse} from '@/device/json_parse'
 import { io } from "socket.io-client";
 
 import {Button, Typography} from 'ant-design-vue';
+
+import {useDevDataStore} from '@/store/modules/devData'
+
 const { Text, Link } = Typography;
 
 const {buttonInfo, labelInfo, addButton, addLabel, getButtonInfo, getLabelInfo} = useStore();
+const devDataStore = useDevDataStore();
 
 
 let sysInfo = sysInit();//解析配置文件
@@ -37,12 +41,18 @@ sysCtl(sysInfo, {
   handleButton,
   handleLabel,
   getButtonInfo,
-  getLabelInfo
+  getLabelInfo,
+  handleDevData,
 });//根据配置文件，配置系统
 
 // const socket = io("http://localhost:3000");
 // socket.emit('clientReq', 'Sent an event from the client!');
 // socket.on('serverRes', function(data){console.log(data.description)});
+
+function handleDevData(devData)
+{
+  devDataStore.setDevData(devData);
+}
 
 function handleButton(info)
 {
@@ -75,11 +85,11 @@ function handleButtonDown(buttonInfo)
 
 </script>
 
-<style lang="less" scoped>
-template {
+<style scoped>
+/* .mainDiv {
     flex-direction: column;
     align-items: center;
-}
+} */
 
 div {
     display: flex;

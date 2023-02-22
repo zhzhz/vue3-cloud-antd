@@ -23,7 +23,9 @@
       <!-- 页面主体，显示不同路由页面 -->
       <div class="tabs-view-content">
         <router-view v-slot="{ Component }">
+          <keep-alive >
             <component :is="Component" :key="route.path" />
+          </keep-alive>
         </router-view>
       </div>
 
@@ -157,6 +159,9 @@
       height: calc(100vh - 110px);
       padding: 20px 14px 0;
       overflow: auto;
+      flex-direction: column;
+      align-items: center;
+      display: flex;
     }
   }
 </style>

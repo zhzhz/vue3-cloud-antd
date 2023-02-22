@@ -104,6 +104,13 @@ export function sysCtl(info, drawContext)
                     //console.log("data from server:", tmp.result);
                     //updateGui();//更新渲染标签
 
+                    //更新标签1的数据，从而更新曲线显示
+                    if (showThing.name == "1")
+                    {
+                      drawContext.handleDevData(Number(tmp.result));
+                      //console.log(drawCtx);
+                    }
+
                     if (dev.getAllNeedValue)
                     {
                         //runLua(dev.showThings);
