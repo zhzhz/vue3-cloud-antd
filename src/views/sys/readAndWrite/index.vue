@@ -25,20 +25,24 @@ import {jsonParse} from '@/device/json_parse'
 
 import { io } from "socket.io-client";
 
+import {Button, Typography} from 'ant-design-vue';
+const { Text, Link } = Typography;
+
 const {buttonInfo, labelInfo, addButton, addLabel, getButtonInfo, getLabelInfo} = useStore();
 
 
-// let sysInfo = sysInit();//解析配置文件
+let sysInfo = sysInit();//解析配置文件
 
-// sysCtl(sysInfo, {
-//   handleButton,
-//   handleLabel,
-//   getButtonInfo,
-//   getLabelInfo
-// });//根据配置文件，配置系统
-const socket = io("http://localhost:3000");
-socket.emit('clientReq', 'Sent an event from the client!');
-socket.on('serverRes', function(data){console.log(data.description)});
+sysCtl(sysInfo, {
+  handleButton,
+  handleLabel,
+  getButtonInfo,
+  getLabelInfo
+});//根据配置文件，配置系统
+
+// const socket = io("http://localhost:3000");
+// socket.emit('clientReq', 'Sent an event from the client!');
+// socket.on('serverRes', function(data){console.log(data.description)});
 
 function handleButton(info)
 {
@@ -72,4 +76,40 @@ function handleButtonDown(buttonInfo)
 </script>
 
 <style lang="less" scoped>
+template {
+    flex-direction: column;
+    align-items: center;
+}
+
+div {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px;
+    width: 300px;
+    height: 100px;
+    border: 1px gray dotted;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.breakStateDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px;
+    /* margin-left: 0px; */
+    width: 130px;
+    height: 30px;
+    border: 1px gray dotted;
+    border-radius: 10px;
+    padding: 5px;
+    /* padding-left: 0px; */
+}
+
+/* .labelBreak {
+  color: #250ef5 !important;
+} */
+
 </style>

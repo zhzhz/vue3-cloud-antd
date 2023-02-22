@@ -22,3 +22,9 @@ export function devCommu(dev, info, cb)
   
 //   devsManage[dev_id](message);
 // });
+
+//服务器传来响应数据，调用用户注册的回调函数
+export function callCbFunc(message, dev_id)
+{
+    devsManage[dev_id](message);
+}
