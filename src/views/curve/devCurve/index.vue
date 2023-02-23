@@ -10,6 +10,13 @@
 
     import {useDevDataStore} from '@/store/modules/devData'
 
+    import { Application } from "pixi.js";
+
+    const game = new Application({
+    width: 750,
+    height: 1080,
+    });
+
     const devDataStore = useDevDataStore();
 
     const devData = [];//曲线数据，对应x轴
@@ -17,7 +24,8 @@
     let devDataCntInit = true;
     
     enum DevData {
-        Length = 30
+        Length = 300,//点的个数，30s/0.1ms=300
+        Interval = 100,//时间间隔，单位ms
     }
 
 
@@ -89,6 +97,7 @@
             //data: powerData,
             data:[],
             //data: [[1642574525000,10],[1647672125000,20],[1652942525000,30]],
+            symbol: 'none',
           },
           {
             name:'温度',
@@ -97,6 +106,7 @@
             //data: tmpData,
             data:[],
             //data: [[1642574525000,20],[1647672125000,40],[1652942525000,30]],
+            symbol: 'none',
           },
           ],
           dataZoom:[
@@ -156,8 +166,11 @@
 
         myChart.setOption(option);
 
+        let cnt = 0;
+        let ms_200Cnt = 0;
+
         //定时去读取采集回来的设备变量，渲染出来
-        setInterval(function () {
+        const handleTicker =  () => {
             //console.log("定时器事件", devDataStore.getDevData);
             //定时生成30s的时间戳和30s的数据
             function genTime(timeLength:number)
@@ -169,76 +182,129 @@
                 for (let i = timeLength-1; i >= 0; i--)
                 {
                     times[i] = timeNumber;
-                    timeNumber -= 1000;
+                    timeNumber -= DevData.Interval;
                 }
 
-                console.log("times", times);
+                //console.log("times", times);
                 return times;
             }
 
-            if (devDataCntInit)
+            ms_200Cnt++;
+            if (ms_200Cnt == 6)
             {
-                if (devDataStore.getDevData != -1)
+                ms_200Cnt = 0;
+
+                if (devDataCntInit)
                 {
-                    //初始化
-                    let times = genTime(DevData.Length);
-
-                    //时间只有最新的一个有效，其他为null
-                    let datas = [];
-                    let i = 0; 
-                    for (; i < DevData.Length-1; i++)
+                    if (devDataStore.getDevData != -1)
                     {
-                        datas[i] = null;
-                    }
+                        //初始化
+                        let times = genTime(DevData.Length);
 
-                    datas[i] = devDataStore.getDevData;
-                    console.log("option0:",datas);
-                    //覆盖曲线配置
+                        //时间只有最新的一个有效，其他为null
+                        let datas = [];
+                        let i = 0; 
+                        for (; i < DevData.Length-1; i++)
+                        {
+                            datas[i] = null;
+                        }
+
+                        datas[i] = devDataStore.getDevData;
+                        //console.log("option0:",datas);
+                        //覆盖曲线配置
+                        let echartsData = [];
+                        for (let i = 0; i < DevData.Length; i++)
+                        {
+                            let powerWithTime:Array<number | null> = [];
+                            powerWithTime.push(times[i]);
+                            powerWithTime.push(datas[i]);
+
+                            echartsData.push(powerWithTime);
+                        }
+                        
+                        //向option中压入数值
+                        for(let i = 0; i < echartsData.length; i++)
+                        {
+                            option.series[0].data.push(echartsData[i]);
+                        }
+                        
+                        console.log("option2:",echartsData);
+                        //console.log("option2:",option.series[0].data);
+
+                        //设置最小时间，否则从0开始显示，曲线只能看见一条竖线 
+                        option.xAxis.min = times[0];
+                        option.xAxis.max = times[DevData.Length-1];
+
+                        myChart.setOption(option);//更新曲线图像
+
+                        devDataCntInit = false;
+                    }
+                }
+                else
+                {
+                    //不断向数组中添加数据，填充后面，取出前面
+                    //取出最后一个时间元素，加1s
+                    
+                    //const timestamp = Date.parse(String(new Date()));
+                    let date = new Date();
+                    
+                    //let time = Number(timestamp);
+                    let time = date.valueOf();
+                    //console.log("time", time);
+
+                    let data = devDataStore.getDevData;
+
+                    //取出data值，处理后再写入
+                    let tmpData = [];
                     for (let i = 0; i < DevData.Length; i++)
                     {
-                        let powerWithTime:Array<number | null> = [];
-                        powerWithTime.push(times[i]);
-                        powerWithTime.push(datas[i]);
-
-                        option.series[0].data.push(powerWithTime);
+                        tmpData.push(option.series[0].data[i]);
                     }
 
-                    console.log("option1:",option.series[0].data);
+                    tmpData.shift();//去除最早的元素
 
-                    //设置最小时间，否则从0开始显示，曲线只能看见一条竖线 
-                    option.xAxis.min = times[0];
-                    option.xAxis.max = times[DevData.Length-1];
+                    tmpData.push([time, data]);//加入最新的元素
 
+                    //向option中压入数值
+                    option.series[0].data = [];
+
+                    for(let i = 0; i < tmpData.length; i++)
+                    {
+                        option.series[0].data.push(tmpData[i]);
+                    }
+
+                    //最小值不用最新的时间，而是用过去30s的时间
+                    //option.xAxis.min = option.series[0].data[0][0];
+                    option.xAxis.min = time - 30*1000;
+                    option.xAxis.max = time;
+
+                    //option.series[0].data[0][0] = option.xAxis.min;
+
+                    //设置10个标签
+                    //option.xAxis.interval = (option.xAxis.max - option.xAxis.min)/10;
+                    
                     myChart.setOption(option);//更新曲线图像
+                    cnt++;
+                    if (cnt == 1000/DevData.Interval)
+                    {
+                        //myChart.setOption(option);//更新曲线图像
+                        cnt = 0;
 
-                    devDataCntInit = false;
+                        //显示时间的开始与结束
+                        let time_ = timestampToTime(time - option.xAxis.min);
+                        if((time_ != "00:30") && (time_ != "00:31") && (time_ != "00:29"))
+                        {
+                            console.log("time", time_, timestampToTime(time))
+                        }
+                            
+                    }
+                    
                 }
             }
-            else
-            {
-                //不断向数组中添加数据，填充后面，取出前面
-                //取出最后一个时间元素，加1s
-                let time:number = option.series[0].data[option.series[0].data.length-1][0];
-                time += 1000;
-
-                let data = devDataStore.getDevData;
-
-                option.series[0].data.shift();//去除最早的元素
-
-                option.series[0].data.push([time, data]);//加入最新的元素
-
-                console.log("option2:",option.series[0].data);
-
-                option.xAxis.min = option.series[0].data[0][0];//修改最小显示时间
-                option.xAxis.max = time;//设置最大显示时间
-
-                myChart.setOption(option);//更新曲线图像
-            }
             
-            
+        }
 
-        },1000);
+        game.ticker.add(handleTicker);
     })
-    
     
 </script>
